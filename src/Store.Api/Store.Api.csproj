@@ -13,8 +13,11 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <ProjectReference Include="..\Store.Messages\Store.Messages.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <PackageReference Include="Store.Messages" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

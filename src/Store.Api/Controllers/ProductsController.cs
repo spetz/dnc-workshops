@@ -7,7 +7,7 @@ using Store.Messages.Products;
 
 namespace Store.Api.Controllers
 {
-    //[ApiController]
+    [ApiController]
     public class ProductsController : BaseController
     {
         private readonly IBusPublisher _busPublisher;
@@ -37,7 +37,7 @@ namespace Store.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody]CreateProduct command)
+        public async Task<ActionResult> Post(CreateProduct command)
         {
             await _busPublisher.PublishCommandAsync(command, 
                 CorrelationContext.Empty);
