@@ -1,0 +1,15 @@
+@url = http://localhost:5000
+@productId = 
+
+###
+GET {{url}}/products
+
+###
+GET {{url}}/products/{{productId}}
+
+###
+POST {{url}}/products
+Content-Type: application/json
+
+{
+}
