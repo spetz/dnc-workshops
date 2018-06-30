@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Dnc.Common.RabbitMq;
 using Microsoft.AspNetCore.Mvc;
+using Store.Api.Services;
 using Store.Messages.Products;
 
 namespace Store.Api.Controllers
@@ -10,21 +11,29 @@ namespace Store.Api.Controllers
     public class ProductsController : BaseController
     {
         private readonly IBusPublisher _busPublisher;
-        public ProductsController(IBusPublisher busPublisher)
+        private readonly IProductService _productService;
+
+        public ProductsController(IBusPublisher busPublisher,
+            IProductService productService)
         {
             _busPublisher = busPublisher;
+            _productService = productService;
         }
 
         [HttpGet]
-        public ActionResult Get() 
-        {
-            return Ok();
-        }
+        public async Task<ActionResult<object>> Get() 
+            => await _productService.BrowseAsync();
 
         [HttpGet("{id}")]
-        public ActionResult Get(Guid id) 
+        public async Task<ActionResult<object>> Get(Guid id) 
         {
-            return Ok();
+            var product = await _productService.GetAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
         }
 
         [HttpPost]

@@ -6,6 +6,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dnc.Common.Mvc;
 using Dnc.Common.RabbitMq;
+using Dnc.Common.RestEase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Store.Api.Services;
 using Store.Messages.Products;
 
 namespace Store.Api
@@ -37,6 +39,7 @@ namespace Store.Api
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.AddRabbitMq();
+            builder.RegisterServiceForwarder<IProductService>("products-service");
             builder.RegisterAssemblyTypes(typeof(Startup).Assembly)
                 .AsImplementedInterfaces();
             Container = builder.Build();
