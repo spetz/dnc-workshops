@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Dnc.Common.Mongo;
 using Dnc.Common.RabbitMq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Store.Messages.Products;
+using Store.Services.Products.Domain;
 
 namespace Store.Services.Products
 {
@@ -34,6 +36,8 @@ namespace Store.Services.Products
             var builder = new ContainerBuilder();
             builder.Populate(services);
             builder.AddRabbitMq();
+            builder.AddMongoDB();
+            builder.AddMongoDBRepository<Product>("Products");
             builder.RegisterAssemblyTypes(typeof(Startup).Assembly)
                 .AsImplementedInterfaces();
 
@@ -44,7 +48,8 @@ namespace Store.Services.Products
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,
-            IApplicationLifetime applicationLifetime)
+            IApplicationLifetime applicationLifetime,
+            IMongoDbInitializer mongoInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -54,7 +59,7 @@ namespace Store.Services.Products
             {
                 app.UseHsts();
             }
-
+            mongoInitializer.InitializeAsync();
             //app.UseHttpsRedirection();
             app.UseRabbitMq()
                 .SubscribeCommand<CreateProduct>();
