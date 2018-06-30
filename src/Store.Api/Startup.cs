@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Dnc.Common.RabbitMq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,7 @@ namespace Store.Api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             var builder = new ContainerBuilder();
             builder.Populate(services);
+            builder.AddRabbitMq();
             Container = builder.Build();
 
             return new AutofacServiceProvider(Container);
@@ -50,6 +52,7 @@ namespace Store.Api
             }
 
             //app.UseHttpsRedirection();
+            app.UseRabbitMq();
             app.UseMvc();
             applicationLifetime.ApplicationStopped
                 .Register(() => Container.Dispose());
