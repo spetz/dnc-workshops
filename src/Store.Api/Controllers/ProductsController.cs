@@ -1,8 +1,10 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Store.Messages.Products;
 
 namespace Store.Api.Controllers
 {
+    //[ApiController]
     public class ProductsController : BaseController
     {
         [HttpGet]
@@ -18,7 +20,7 @@ namespace Store.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post()
+        public ActionResult Post([FromBody]CreateProduct command)
         {
             return Ok();
         }
